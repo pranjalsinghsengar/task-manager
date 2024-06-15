@@ -33,7 +33,7 @@ const AddTask = ({ add, setAdd }) => {
   return (
     <>
       {add ? (
-        <div className='shadow-xl  border-stone-500 bg-zinc-800 border px-3 py-2 rounded-lg text-white'>
+        <div className='shadow-xl  border-stone-500 bg-zinc-800 border px-3 py-2 rounded-lg  '>
           <div className='flex items-center justify-between'>
             <h1 className='text-lg font-bold  '>Add Task </h1>
             {setAdd && (
@@ -166,7 +166,7 @@ const AddTask = ({ add, setAdd }) => {
         </div>
       ) : (
         <div
-          className='flex items-center gap-2 font-semibold text-sm text-white w-full  cursor-pointer'
+          className='flex items-center gap-2 font-semibold text-sm  w-full  cursor-pointer'
           onClick={() => setAdd(true)}
         >
           <span>Add Task</span>

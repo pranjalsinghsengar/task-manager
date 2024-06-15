@@ -5,6 +5,7 @@ const initialState = {
   tasks: [],
   loading: false,
   error: null,
+  isaddTask: false,
 };
 
 export const createTask = createAsyncThunk(
@@ -149,9 +150,23 @@ export const taskSlice = createSlice({
         }
       });
   },
+  reducers: {
+    openAddBtn: (state) => {
+      state.isaddTask = state.isaddTask === true ? false : true;
+    },
+    closeAddBtn: (state) => {
+      state.isaddTask = false;
+    },
+  },
 });
 
-export const { addTask, removeTask, updateStatus, setTasks } =
-  taskSlice.actions;
+export const {
+  addTask,
+  removeTask,
+  updateStatus,
+  setTasks,
+  openAddBtn,
+  closeAddBtn,
+} = taskSlice.actions;
 
 export default taskSlice.reducer;

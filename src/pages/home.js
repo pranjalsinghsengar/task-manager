@@ -1,15 +1,38 @@
-import { useEffect, useState } from "react";
-import Layout from "./components/layout";
-import Card from "./components/card";
-import DropIndicator from "./components/dropIndicator";
-import SideBar from "./components/sideBar";
+import { useEffect, useRef, useState } from "react";
+import Layout from "../components/layout";
+import { tasks } from "../data/taskData";
+import Card from "../components/card";
+import DropIndicator from "../components/dropIndicator";
+import SideBar from "../components/sideBar";
+import { color, colors } from "../data/taskColor";
+import { IoAdd, IoCloseOutline } from "react-icons/io5";
+import { GrRotateLeft } from "react-icons/gr";
+import { PiCalendar } from "react-icons/pi";
+import { CiCalendarDate } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import { showTasks, updateTask } from "./redux/slice";
+import {
+  addTask,
+  closeAddBtn,
+  createTask,
+  setTasks,
+  showTasks,
+  updateStatus,
+  updateTask,
+} from "../redux/slice";
+import AddTask from "../components/addTask";
+import axios from "axios";
 
 function Home() {
+  // const [cards, setCards] = useState(tasks);
   const dispatch = useDispatch();
+  // const selector = useSelector((data) => console.log(data.allTasks));
+  // console.log("selector", selector);
 
-  const allTasks = useSelector((state) => state.allTasks.tasks);
+  console.warn("PORT", process.env.REACT_APP_API_URL);
+  console.warn("PORT", process.env.REACT_APP_CALLBACK_URL);
+
+  const data = useSelector((state) => state.allTasks);
+  const allTasks = data.tasks;
 
   const DropHandler = (e, status) => {
     const JSON_data = e.dataTransfer.getData("card");
@@ -23,19 +46,50 @@ function Home() {
     dispatch(updateTask(data));
   };
 
-  console.warn("allTasks", allTasks);
+  // const [todo, setTodo] = useState(10000);
+  // console.warn("value", value);
+  //   console.warn("allTasks", allTasks);
 
   useEffect(() => {
     dispatch(showTasks());
   }, []);
+  // useEffect(() => {
+  //   let config = {
+  //     method: "get",
+  //     maxBodyLength: Infinity,
+  //     url: "http://localhost:8000/",
+  //     headers: {},
+  //   };
+
+  //   axios
+  //     .request(config)
+  //     .then((response) => {
+  //       // console.log(JSON.stringify(response.data));
+  //       dispatch(setTasks(response.data.tasks));
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, [allTasks]);
 
   return (
     <Layout>
-      <div className='flex w-full overflow-hidden h-full'>
+      {data.isaddTask && (
+        <div className='absolute top-7 right-20 z-30  p-10 pl-52 pb-52  backdrop-blur  '>
+          <AddTask add={true} />
+        </div>
+      )}
+      <div className='py-5 px-20 text-5xl font-bold '>
+        {/* Hii, Pranjal  */}
+      </div>
+      <div
+        className='flex w-full overflow-hidden h-full'
+        onClick={() => dispatch(closeAddBtn())}
+      >
         {/* <button className='bg-white ' onClick={() => setValue("mahi")}>
           button
         </button> */}
-        <div className='flex justify-evenly h-full gap-5 w-full px-16'>
+        <div className='flex justify-evenly h-full gap-5 w-full px-16 pr-10'>
           <Column
             title='New Task'
             status='New Task'
@@ -74,8 +128,7 @@ export default Home;
 export const Column = ({ title, status, allTasks, DropHandler }) => {
   const FilterData = allTasks.filter((item) => item.status === status);
   const [active, setActive] = useState("");
-  // console.warn(allTasks);
-  const [add, setAdd] = useState(false);
+  // const motionRef = useRef();
 
   const HandleDragStart = (e, card) => {
     console.warn("handle drag start", card);
@@ -89,12 +142,13 @@ export const Column = ({ title, status, allTasks, DropHandler }) => {
 
   return (
     <div
-      className='flex flex-col h-full w-full'
+      className='flex flex-col h-full w-full gap-5'
       onDrop={(e) => DropHandler(e, status)}
       onDragOver={DragOverHandler}
+      // ref={motionRef}
     >
-      <div className='flex items-center gap-1 font-bold text-gray-500 '>
-        <div className='text-lg text-gray-500'> {title}</div>
+      <div className='flex items-center gap-1 font-bold text-gray-500  border-b border-zinc-600 '>
+        <div className='text-lg text-gray-500 '> {title}</div>
         <span>
           {"("}
           {FilterData.length}
@@ -108,12 +162,22 @@ export const Column = ({ title, status, allTasks, DropHandler }) => {
       >
         {status === "New Task"
           ? FilterData.slice(0, 4).map((item, index) => (
-              <Card {...item} key={index} HandleDragStart={HandleDragStart} />
+              <Card
+                {...item}
+                key={index}
+                HandleDragStart={HandleDragStart}
+                // refrence={motionRef}
+              />
             ))
           : FilterData.length > 0 &&
             FilterData.map((item, index) => {
               return (
-                <Card {...item} key={index} HandleDragStart={HandleDragStart} />
+                <Card
+                  {...item}
+                  key={index}
+                  HandleDragStart={HandleDragStart}
+                  // refrence={motionRef}
+                />
               );
             })}
 

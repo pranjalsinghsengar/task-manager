@@ -26,11 +26,11 @@ const Card = ({
   status,
   dateOfCompilation,
   HandleDragStart,
-  refrence,
+  // refrence,
 }) => {
   console.log("tagBg", tagBg);
   return (
-    <motion.div drag dragConstraints={refrence}>
+    <motion.div layout>
       <DropIndicator status={status} beforeId={_id} />
       <div
         draggable='true'
@@ -47,33 +47,33 @@ const Card = ({
             dateOfCompilation,
           })
         }
-        className='bg-zinc-900 border border-zinc-700 px-5 py-4 text-white w-full rounded-lg drop-shadow-md flex flex-col justify-between gap-3 cursor-grab active:cursor-grabbing'
+        className='bg-zinc-900 border border-zinc-700 px-3 lg:px-5 py-4  w-full rounded-lg drop-shadow-md flex flex-col justify-between gap-3 cursor-grab active:cursor-grabbing'
       >
         {/* Header */}
 
-        <div className='flex items-center justify-between'>
+        <div className='flex items-center justify-between gap-3 lg:text-base text-xs'>
           <div
-            className={`px-7 py-0.5 rounded-full font-semibold ${tagBg} ${tagtext}  `}
+            className={`px-4 lg:px-7 py-0.5 rounded-full font-semibold ${tagBg} ${tagtext}  `}
           >
             {tagTitle}
           </div>
-          <button className='text-2xl text-zinc-400'>
+          <button className=' text-zinc-400 lg:text-2xl text-sm'>
             <BsThreeDots />
           </button>
         </div>
         {/* Text */}
         <div>
-          <div className='font-semibold border-b border-zinc-700 mb-3 capitalize text-zinc-500'>
+          <div className='font-semibold border-b border-zinc-700 mb-3 capitalize text-zinc-500 lg:text-base text-sm'>
             {title}
           </div>
-          <div className='text-zinc-200'>{content}</div>
+          <div className='text-zinc-200 lg:text-base text-sm'>{content}</div>
         </div>
 
         {/* Footer */}
         <div className='flex justify-end text-slate-400'>
           <div className='flex items-center gap-1'>
-            <CiCalendarDate className='text-xl' />
-            <span>{dateOfCompilation}</span>
+            <CiCalendarDate className=' text-xl' />
+            <span className='lg:text-base text-sm'>{dateOfCompilation}</span>
           </div>
         </div>
       </div>

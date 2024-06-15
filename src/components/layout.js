@@ -1,12 +1,14 @@
 import React from "react";
+import Header from "./header";
 
 const Layout = ({ children }) => {
   return (
-    <div className='bg-black h-screen relative '>
+    <div className='bg-black h-screen relative text-white overflow-hidden' >
       {/* <BG_Blur /> */}
-      <div className='z-10 relative h-full invisible lg:visible '>
-        {children}
-      </div>
+      <Header />
+
+      <div className='z-10 relative h-[89%] pb-5 '>{children}</div>
+
     </div>
   );
 };
