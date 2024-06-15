@@ -1,35 +1,13 @@
-import { useEffect, useRef, useState } from "react";
-import "./App.css";
+import { useEffect, useState } from "react";
 import Layout from "./components/layout";
-import { tasks } from "./data/taskData";
 import Card from "./components/card";
 import DropIndicator from "./components/dropIndicator";
 import SideBar from "./components/sideBar";
-import { color, colors } from "./data/taskColor";
-import { IoAdd, IoCloseOutline } from "react-icons/io5";
-import { GrRotateLeft } from "react-icons/gr";
-import { PiCalendar } from "react-icons/pi";
-import { CiCalendarDate } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addTask,
-  createTask,
-  setTasks,
-  showTasks,
-  updateStatus,
-  updateTask,
-} from "./redux/slice";
-import AddTask from "./components/addTask";
-import axios from "axios";
+import { showTasks, updateTask } from "./redux/slice";
 
-function App() {
-  // const [cards, setCards] = useState(tasks);
+function Home() {
   const dispatch = useDispatch();
-  // const selector = useSelector((data) => console.log(data.allTasks));
-  // console.log("selector", selector);
-
-  console.warn("PORT", process.env.REACT_APP_API_URL);
-  console.warn("PORT", process.env.REACT_APP_CALLBACK_URL);
 
   const allTasks = useSelector((state) => state.allTasks.tasks);
 
@@ -45,31 +23,11 @@ function App() {
     dispatch(updateTask(data));
   };
 
-  // const [todo, setTodo] = useState(10000);
-  // console.warn("value", value);
   console.warn("allTasks", allTasks);
 
   useEffect(() => {
     dispatch(showTasks());
   }, []);
-  // useEffect(() => {
-  //   let config = {
-  //     method: "get",
-  //     maxBodyLength: Infinity,
-  //     url: "http://localhost:8000/",
-  //     headers: {},
-  //   };
-
-  //   axios
-  //     .request(config)
-  //     .then((response) => {
-  //       // console.log(JSON.stringify(response.data));
-  //       dispatch(setTasks(response.data.tasks));
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, [allTasks]);
 
   return (
     <Layout>
@@ -111,12 +69,13 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
 
 export const Column = ({ title, status, allTasks, DropHandler }) => {
   const FilterData = allTasks.filter((item) => item.status === status);
   const [active, setActive] = useState("");
-  const motionRef = useRef();
+  // console.warn(allTasks);
+  const [add, setAdd] = useState(false);
 
   const HandleDragStart = (e, card) => {
     console.warn("handle drag start", card);
@@ -133,7 +92,6 @@ export const Column = ({ title, status, allTasks, DropHandler }) => {
       className='flex flex-col h-full w-full'
       onDrop={(e) => DropHandler(e, status)}
       onDragOver={DragOverHandler}
-      ref={motionRef}
     >
       <div className='flex items-center gap-1 font-bold text-gray-500 '>
         <div className='text-lg text-gray-500'> {title}</div>
@@ -150,22 +108,12 @@ export const Column = ({ title, status, allTasks, DropHandler }) => {
       >
         {status === "New Task"
           ? FilterData.slice(0, 4).map((item, index) => (
-              <Card
-                {...item}
-                key={index}
-                HandleDragStart={HandleDragStart}
-                refrence={motionRef}
-              />
+              <Card {...item} key={index} HandleDragStart={HandleDragStart} />
             ))
           : FilterData.length > 0 &&
             FilterData.map((item, index) => {
               return (
-                <Card
-                  {...item}
-                  key={index}
-                  HandleDragStart={HandleDragStart}
-                  refrence={motionRef}
-                />
+                <Card {...item} key={index} HandleDragStart={HandleDragStart} />
               );
             })}
 
