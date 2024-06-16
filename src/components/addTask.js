@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTask, createTask } from "../redux/slice";
 import { IoAdd, IoCloseOutline } from "react-icons/io5";
 import { GrRotateLeft } from "react-icons/gr";
@@ -8,6 +8,7 @@ import { CiCalendarDate } from "react-icons/ci";
 
 const AddTask = ({ add, setAdd }) => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.allTasks.user);
   //   const [add, setAdd] = useState(false);
   const intialize = {
     title: "",
@@ -18,6 +19,7 @@ const AddTask = ({ add, setAdd }) => {
     taghero: "blue",
     status: "New Task",
     dateOfCompilation: "",
+    userId: user._id,
   };
   const [data, setData] = useState(intialize);
   // console.log(data);
@@ -33,7 +35,7 @@ const AddTask = ({ add, setAdd }) => {
   return (
     <>
       {add ? (
-        <div className='shadow-xl  border-stone-500 bg-zinc-800 border px-3 py-2 rounded-lg  '>
+        <div className='shadow-xl  border-stone-500 bg-zinc-800 border px-3 py-2 rounded-lg z-10 '>
           <div className='flex items-center justify-between'>
             <h1 className='text-lg font-bold  '>Add Task </h1>
             {setAdd && (
@@ -45,7 +47,7 @@ const AddTask = ({ add, setAdd }) => {
 
           <form className='mt-6 flex flex-col gap-2 ' onSubmit={FormHandler}>
             <select
-              className=' w-full rounded-md px-4 py-2 font-semibold  bg-black/50'
+              className=' w-full rounded-md px-4 py-2 font-semibold  bg-black/50 outline-none'
               value={data.status}
               onChange={(e) => setData({ ...data, status: e.target.value })}
             >
@@ -56,8 +58,8 @@ const AddTask = ({ add, setAdd }) => {
             </select>
             <input
               required
-              placeholder='title (optional)'
-              className=' w-full rounded-md px-4 py-2 font-semibold  bg-black/50'
+              placeholder='title '
+              className=' w-full rounded-md px-4 py-2 font-semibold  bg-black/50 outline-none'
               onChange={(e) => setData({ ...data, title: e.target.value })}
               value={data?.title}
             />
@@ -68,7 +70,7 @@ const AddTask = ({ add, setAdd }) => {
               value={data.content}
               onChange={(e) => setData({ ...data, content: e.target.value })}
               placeholder='write your content'
-              className=' w-full rounded-md px-2 font-semibold  bg-black/50'
+              className=' w-full rounded-md px-2 font-semibold  bg-black/50 outline-none'
             />
 
             {/* tag */}
@@ -88,7 +90,7 @@ const AddTask = ({ add, setAdd }) => {
                   <input
                     required
                     placeholder='Tag title'
-                    className={`bg-black/50 rounded-md w-full  px-4 py-2 font-semibold outline-none ${data.tagtext} border-${data.taghero}-500`}
+                    className={`bg-black/50 rounded-md w-full  px-4 py-2 font-semibold outline-none `}
                     onChange={(e) =>
                       setData({ ...data, tagTitle: e.target.value })
                     }
@@ -155,7 +157,7 @@ const AddTask = ({ add, setAdd }) => {
             </div>
             <div className='flex justify-center'>
               <button
-                disabled={data.date === ""}
+                disabled={data.dateOfCompilation === ""}
                 type='submit'
                 className='bg-stone-500  font-semibold px-6 py-2 rounded-md'
               >

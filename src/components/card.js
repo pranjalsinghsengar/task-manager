@@ -26,11 +26,11 @@ const Card = ({
   status,
   dateOfCompilation,
   HandleDragStart,
-  // refrence,
+  motionRef,
 }) => {
   console.log("tagBg", tagBg);
   return (
-    <motion.div layout>
+    <motion.div dragConstraints={motionRef}>
       <DropIndicator status={status} beforeId={_id} />
       <div
         draggable='true'
@@ -66,7 +66,9 @@ const Card = ({
           <div className='font-semibold border-b border-zinc-700 mb-3 capitalize text-zinc-500 lg:text-base text-sm'>
             {title}
           </div>
-          <div className='text-zinc-200 lg:text-base text-sm'>{content}</div>
+          <div className='text-zinc-200 lg:text-base text-sm whitespace-pre'>
+            {content}
+          </div>
         </div>
 
         {/* Footer */}

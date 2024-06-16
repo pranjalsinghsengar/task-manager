@@ -12,7 +12,7 @@ import { CiCalendarDate } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addTask,
-  closeAddBtn,
+  allTabCloseHandler,
   createTask,
   setTasks,
   showTasks,
@@ -27,6 +27,7 @@ function Home() {
   const dispatch = useDispatch();
   // const selector = useSelector((data) => console.log(data.allTasks));
   // console.log("selector", selector);
+  const motionRef = useRef();
 
   console.warn("PORT", process.env.REACT_APP_API_URL);
   console.warn("PORT", process.env.REACT_APP_CALLBACK_URL);
@@ -51,7 +52,7 @@ function Home() {
   //   console.warn("allTasks", allTasks);
 
   useEffect(() => {
-    dispatch(showTasks());
+    dispatch(showTasks(data.user));
   }, []);
   // useEffect(() => {
   //   let config = {
@@ -84,23 +85,28 @@ function Home() {
       </div>
       <div
         className='flex w-full overflow-hidden h-full'
-        onClick={() => dispatch(closeAddBtn())}
+        onClick={() => dispatch(allTabCloseHandler())}
       >
         {/* <button className='bg-white ' onClick={() => setValue("mahi")}>
           button
         </button> */}
-        <div className='flex justify-evenly h-full gap-5 w-full px-16 pr-10'>
+        <div
+          className='flex justify-evenly h-full gap-5 w-full px-16 pr-10'
+          ref={motionRef}
+        >
           <Column
             title='New Task'
             status='New Task'
             allTasks={allTasks}
             DropHandler={DropHandler}
+            motionRef={motionRef}
           />
           <Column
             title='Not Started'
             status='Not Started'
             allTasks={allTasks}
             DropHandler={DropHandler}
+            motionRef={motionRef}
             // DragOverHandler={DragOverHandler}
           />
           <Column
@@ -108,12 +114,14 @@ function Home() {
             status='In Progress'
             DropHandler={DropHandler}
             allTasks={allTasks}
+            motionRef={motionRef}
           />
           <Column
             title='Completed'
             status='Completed'
             allTasks={allTasks}
             DropHandler={DropHandler}
+            motionRef={motionRef}
           />
         </div>
 
@@ -125,10 +133,9 @@ function Home() {
 
 export default Home;
 
-export const Column = ({ title, status, allTasks, DropHandler }) => {
+export const Column = ({ title, status, allTasks, DropHandler, motionRef }) => {
   const FilterData = allTasks.filter((item) => item.status === status);
   const [active, setActive] = useState("");
-  // const motionRef = useRef();
 
   const HandleDragStart = (e, card) => {
     console.warn("handle drag start", card);
@@ -137,14 +144,25 @@ export const Column = ({ title, status, allTasks, DropHandler }) => {
   };
   const DragOverHandler = (e) => {
     e.preventDefault();
-    // setActive(true);
+    // setActive(true)
+    // setActive(false);
   };
+  useEffect(() => {
+    if (active) {
+      setTimeout(() => {
+        setActive(false);
+      }, 3000);
+    }
+  }, [active]);
 
   return (
     <div
       className='flex flex-col h-full w-full gap-5'
       onDrop={(e) => DropHandler(e, status)}
       onDragOver={DragOverHandler}
+      onDragEnter={() => setActive(true)}
+      onDragLeave={() => setActive(false)}
+      onDragEndCapture={() => setActive(false)}
       // ref={motionRef}
     >
       <div className='flex items-center gap-1 font-bold text-gray-500  border-b border-zinc-600 '>
@@ -157,29 +175,30 @@ export const Column = ({ title, status, allTasks, DropHandler }) => {
       </div>
       <div
         className={`flex flex-col gap-1 w-full h-full overflow-y-scroll ${
-          active && "bg-white/30"
+          active && "bg-zinc-900/20"
         } `}
       >
-        {status === "New Task"
+        {/* {status === "New Task"
           ? FilterData.slice(0, 4).map((item, index) => (
               <Card
                 {...item}
                 key={index}
                 HandleDragStart={HandleDragStart}
-                // refrence={motionRef}
+                motionRef={motionRef}
               />
             ))
-          : FilterData.length > 0 &&
-            FilterData.map((item, index) => {
-              return (
-                <Card
-                  {...item}
-                  key={index}
-                  HandleDragStart={HandleDragStart}
-                  // refrence={motionRef}
-                />
-              );
-            })}
+          : */}
+        {FilterData.length > 0 &&
+          FilterData.map((item, index) => {
+            return (
+              <Card
+                {...item}
+                key={index}
+                HandleDragStart={HandleDragStart}
+                motionRef={motionRef}
+              />
+            );
+          })}
 
         <DropIndicator status={status} beforeId='-1' />
         {/* {status === "New Task" && <AddTask add={add} setAdd={setAdd} />} */}

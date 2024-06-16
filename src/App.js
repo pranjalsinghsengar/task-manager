@@ -11,14 +11,6 @@ import { GrRotateLeft } from "react-icons/gr";
 import { PiCalendar } from "react-icons/pi";
 import { CiCalendarDate } from "react-icons/ci";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addTask,
-  createTask,
-  setTasks,
-  showTasks,
-  updateStatus,
-  updateTask,
-} from "./redux/slice";
 import AddTask from "./components/addTask";
 import axios from "axios";
 import TaskRouters from "./routes";

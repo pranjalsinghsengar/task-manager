@@ -6,6 +6,8 @@ const initialState = {
   loading: false,
   error: null,
   isaddTask: false,
+  user: null,
+  isSetting: false,
 };
 
 export const createTask = createAsyncThunk(
@@ -15,7 +17,7 @@ export const createTask = createAsyncThunk(
     try {
       const response = await axios.post(
         // "https://666d790f7a3738f7cacc75fc.mockapi.io/new",
-        `${process.env.REACT_APP_API_URL}create/`,
+        `${process.env.REACT_APP_API_URL}/create`,
         JSON.stringify(data),
         {
           headers: {
@@ -33,9 +35,21 @@ export const createTask = createAsyncThunk(
 
 export const showTasks = createAsyncThunk(
   "showTasks",
-  async (_, { rejectWithValue }) => {
+  async (userId, { rejectWithValue }) => {
+    const data = {
+      userId: userId._id,
+    };
+    // console.log("userId", data);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}`);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}`,
+        JSON.stringify(data),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -48,7 +62,7 @@ export const updateTask = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}update/`,
+        `${process.env.REACT_APP_API_URL}/update`,
         JSON.stringify(data),
         {
           headers: {
@@ -70,7 +84,7 @@ export const deleteTask = createAsyncThunk(
     };
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}delete`,
+        `${process.env.REACT_APP_API_URL}/delete`,
         JSON.stringify(payload),
         {
           headers: {
@@ -110,7 +124,11 @@ export const taskSlice = createSlice({
       .addCase(showTasks.fulfilled, (state, action) => {
         state.loading = false;
         if (action.payload.success === true) {
+          if (!action.payload.tasks) {
+            state.tasks = [];
+          }
           state.tasks = action.payload.tasks;
+          console.log("action.payload", action.payload);
         } // Assuming payload structure has a 'tasks' property
         else {
           console.error("data not fetched i think!!");
@@ -151,11 +169,30 @@ export const taskSlice = createSlice({
       });
   },
   reducers: {
+    setUserData: (state, action) => {
+      if (action.payload) {
+        localStorage.setItem("user", JSON.stringify(action.payload));
+        state.user = action.payload;
+      }
+    },
+    getUserData: (state) => {
+      const storedUser = localStorage.getItem("user");
+      state.user = storedUser ? JSON.parse(storedUser) : null;
+    },
+    settingHandler: (state) => {
+      state.isSetting = state.isSetting === true ? false : true;
+    },
+
     openAddBtn: (state) => {
       state.isaddTask = state.isaddTask === true ? false : true;
     },
-    closeAddBtn: (state) => {
+    allTabCloseHandler: (state) => {
       state.isaddTask = false;
+      state.isSetting = false;
+    },
+    logoutHandler: (state) => {
+      localStorage.removeItem("user");
+      state.user = null;
     },
   },
 });
@@ -166,7 +203,11 @@ export const {
   updateStatus,
   setTasks,
   openAddBtn,
-  closeAddBtn,
+  setUserData,
+  getUserData,
+  allTabCloseHandler,
+  settingHandler,
+  logoutHandler,
 } = taskSlice.actions;
 
 export default taskSlice.reducer;
