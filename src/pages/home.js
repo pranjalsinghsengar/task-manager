@@ -14,6 +14,7 @@ import {
   addTask,
   allTabCloseHandler,
   createTask,
+  fetchAssignedTasks,
   setTasks,
   showTasks,
   updateStatus,
@@ -29,8 +30,8 @@ function Home() {
   // console.log("selector", selector);
   const motionRef = useRef();
 
-  console.warn("PORT", process.env.REACT_APP_API_URL);
-  console.warn("PORT", process.env.REACT_APP_CALLBACK_URL);
+  // console.warn("PORT", process.env.REACT_APP_API_URL);
+  // console.warn("PORT", process.env.REACT_APP_CALLBACK_URL);
 
   const data = useSelector((state) => state.allTasks);
   const allTasks = data.tasks;
@@ -52,7 +53,12 @@ function Home() {
   //   console.warn("allTasks", allTasks);
 
   useEffect(() => {
-    dispatch(showTasks(data.user));
+    if (data) {
+      dispatch(showTasks(data.user));
+      dispatch(fetchAssignedTasks(data.user?._id));
+    } else {
+      alert("error in sending data");
+    }
   }, []);
   // useEffect(() => {
   //   let config = {
@@ -200,7 +206,7 @@ export const Column = ({ title, status, allTasks, DropHandler, motionRef }) => {
             );
           })}
 
-        <DropIndicator status={status} beforeId='-1' />
+        {/* <DropIndicator status={status} beforeId='-1' /> */}
         {/* {status === "New Task" && <AddTask add={add} setAdd={setAdd} />} */}
       </div>
     </div>

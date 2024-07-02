@@ -1,9 +1,10 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/layout";
 import { useDispatch } from "react-redux";
 import { getUserData, setUserData } from "../redux/slice";
+import Loader from "../components/loader";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 // import { AppContext } from "../context/appContext";
@@ -25,10 +26,19 @@ const Login = () => {
   };
 
   const dispatch = useDispatch();
+  const [loader, setLoader] = useState(false);
+
+  useEffect(() => {
+    if (loader) {
+      setTimeout(() => {
+        setLoader(false);
+      }, 4000);
+    }
+  }, [loader]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoader(true);
     let data = JSON.stringify(formData);
     let config = {
       method: "post",
@@ -46,7 +56,7 @@ const Login = () => {
         console.log(JSON.stringify(response.data));
         if (response.data.success === true) {
           //   toast.success("Login Successfull");
-
+          setLoader(false);
           dispatch(setUserData(response.data.findUser));
           navigate("/");
           setTimeout(() => {
@@ -60,6 +70,7 @@ const Login = () => {
       })
       .catch((error) => {
         console.log(error);
+        setLoader(false);
         // toast.error(error.response.data.message);
       });
   };
@@ -75,7 +86,7 @@ const Login = () => {
                 Email
               </label>
               <input
-                // type="email"
+                type="email"
                 id='email'
                 name='email'
                 value={formData.email}
@@ -98,12 +109,16 @@ const Login = () => {
                 required
               />
             </div>
-            <button
-              type='submit'
-              className='w-full px-3 py-2 text-white bg-slate-900 rounded  outline-none '
-            >
-              Login
-            </button>
+            {loader ? (
+              <Loader />
+            ) : (
+              <button
+                type='submit'
+                className='w-full px-3 py-2 text-white bg-slate-900 rounded  outline-none '
+              >
+                Login
+              </button>
+            )}
           </form>
           <button
             onClick={() => navigate("/signup")}

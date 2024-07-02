@@ -3,6 +3,7 @@ import axios from "axios";
 
 const initialState = {
   tasks: [],
+  assignTasks: [],
   loading: false,
   error: null,
   isaddTask: false,
@@ -98,6 +99,73 @@ export const deleteTask = createAsyncThunk(
     }
   }
 );
+export const newAssignedTask = createAsyncThunk(
+  "newAssignedTask",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/assinedtask/create`,
+        JSON.stringify(data),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const getAssignedTask = createAsyncThunk(
+  "getAssignedTask",
+  async (data, { rejectWithValue }) => {
+    try {
+      const payload = {
+        userId: data,
+      };
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/assinedtask/get`,
+        JSON.stringify(payload),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+export const fetchAssignedTasks = createAsyncThunk(
+  "tasks/fetchAssignedTasks",
+  async (assignedUserId, { rejectWithValue }) => {
+    try {
+      const payload = {
+        assignedUserId: assignedUserId,
+      };
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/fetchAssignedTasks`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("fetchAssignedTasks", response.data);
+      return response.data; // Return the data retrieved from the API
+    } catch (error) {
+      console.error("Error fetching assigned tasks:", error);
+      return rejectWithValue(error.message); // Return with rejectWithValue for error handling
+    }
+  }
+);
 
 export const taskSlice = createSlice({
   name: "tasks",
@@ -166,6 +234,28 @@ export const taskSlice = createSlice({
             (item) => item._id !== payload.deletedId
           );
         }
+      })
+      .addCase(newAssignedTask.fulfilled, (state, action) => {
+        state.loading = false;
+        console.log(action.payload);
+        state.assignTasks.push(action.payload.tasks);
+      })
+      .addCase(newAssignedTask.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(newAssignedTask.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        console.log(action.payload);
+      })
+      .addCase(getAssignedTask.fulfilled, (state, action) => {
+        state.assignTasks = action.payload.tasks;
+        console.warn("getAssignedTask", action.payload);
+      })
+      .addCase(fetchAssignedTasks.fulfilled, (state, action) => {
+        // state.assignTasks = action.payload.tasks;
+        console.warn("fatchAssignedTask", action.payload);
       });
   },
   reducers: {

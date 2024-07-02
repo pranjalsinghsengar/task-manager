@@ -95,7 +95,7 @@ const Signup = () => {
                 Email
               </label>
               <input
-                // type="email"
+                type='email'
                 id='email'
                 name='email'
                 value={formData.email}

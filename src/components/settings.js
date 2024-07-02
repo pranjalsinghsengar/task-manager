@@ -32,7 +32,7 @@ const Settings = ({ user }) => {
           {/* setting */}
           <div className='flex gap-10'>
             <ShowUserContainer label='First Name' title={user?.firstName} />
-            <ShowUserContainer label='Last Name' title={user?.firstName} />
+            <ShowUserContainer label='Last Name' title={user?.lastName} />
           </div>
           <ShowUserContainer label='email id' title={user?.email} />
         </div>
