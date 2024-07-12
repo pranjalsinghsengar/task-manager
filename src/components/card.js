@@ -3,6 +3,8 @@ import { BsThreeDots } from "react-icons/bs";
 import { CiCalendarDate } from "react-icons/ci";
 import DropIndicator from "./dropIndicator";
 import { motion } from "framer-motion";
+import useFormatDate from "../hooks/useFormatDate";
+import useFormatTime from "../hooks/useFormatTime";
 
 // title: "",
 //     content: "",
@@ -25,10 +27,11 @@ const Card = ({
   content,
   status,
   dateOfCompilation,
+  assiendName,
   HandleDragStart,
   motionRef,
 }) => {
-  console.log("tagBg", tagBg);
+  // console.log("tagBg", tagBg);
   return (
     <motion.div dragConstraints={motionRef}>
       <DropIndicator status={status} beforeId={_id} />
@@ -57,9 +60,11 @@ const Card = ({
           >
             {tagTitle}
           </div>
-          <button className=' text-zinc-400 lg:text-2xl text-sm'>
-            <BsThreeDots />
-          </button>
+          {assiendName && (
+            <i className=' text-zinc-400 lg:text-sm text-sm'>
+              <span className='font-bold'>by :</span> {assiendName}
+            </i>
+          )}
         </div>
         {/* Text */}
         <div>
@@ -75,7 +80,10 @@ const Card = ({
         <div className='flex justify-end text-slate-400'>
           <div className='flex items-center gap-1'>
             <CiCalendarDate className=' text-xl' />
-            <span className='lg:text-base text-sm'>{dateOfCompilation}</span>
+            <span className='lg:text-xs text-xs flex flex-col'>
+              {useFormatDate(dateOfCompilation)}
+              <i className=''>{useFormatTime(dateOfCompilation)}</i>
+            </span>
           </div>
         </div>
       </div>

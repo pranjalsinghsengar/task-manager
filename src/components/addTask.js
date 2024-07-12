@@ -5,10 +5,12 @@ import { IoAdd, IoCloseOutline } from "react-icons/io5";
 import { GrRotateLeft } from "react-icons/gr";
 import { colors } from "../data/taskColor";
 import { CiCalendarDate } from "react-icons/ci";
+import { Loader } from "rsuite";
 
 const AddTask = ({ add, setAdd }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.allTasks.user);
+  const loading = useSelector((state) => state.allTask?.loading);
   //   const [add, setAdd] = useState(false);
   const intialize = {
     title: "",
@@ -27,9 +29,11 @@ const AddTask = ({ add, setAdd }) => {
     e.preventDefault();
     // setCards((prev) => [...prev, data]);
     // dispatch(addTask(data));
-    dispatch(createTask(data));
-    console.log(data);
-    setData(intialize);
+    if (data.userId) {
+      dispatch(createTask(data));
+      console.log("data", data);
+      setData(intialize);
+    }
   };
 
   return (
@@ -156,13 +160,17 @@ const AddTask = ({ add, setAdd }) => {
               <CiCalendarDate />
             </div>
             <div className='flex justify-center'>
-              <button
-                disabled={data.dateOfCompilation === ""}
-                type='submit'
-                className='bg-stone-500  font-semibold px-6 py-2 rounded-md'
-              >
-                Done
-              </button>
+              {!loading ? (
+                <button
+                  disabled={data.dateOfCompilation === ""}
+                  type='submit'
+                  className='bg-stone-500  font-semibold px-6 py-2 rounded-md'
+                >
+                  Add new task
+                </button>
+              ) : (
+                <Loader />
+              )}
             </div>
           </form>
         </div>

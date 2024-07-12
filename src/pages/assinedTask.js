@@ -4,6 +4,8 @@ import { BiRevision } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAssignedTask } from "../redux/slice";
+import useFormatDate from "../hooks/useFormatDate";
+import useFormatTime from "../hooks/useFormatTime";
 
 const AssinedTask = () => {
   const navigate = useNavigate();
@@ -18,17 +20,20 @@ const AssinedTask = () => {
     }
   }, []);
 
+  console.warn("=>>>>", useFormatDate("2024-07-12T00:00:00.000Z"));
+
   return (
     <Layout>
       <div className='relative h-full'>
-        <div className='flex justify-center w-full h-full overflow-scroll pb-20 '>
-          <table className='w-11/12 h-full'>
+        <div className='flex justify-center w-full  overflow-scroll pb-20 '>
+          <table className='w-11/12'>
             <thead>
               <th>Sn.</th>
               <th>Task title</th>
               <th>discription</th>
               <th>tag</th>
               <th>Assisted to</th>
+              <th>status</th>
               <th>assined date</th>
               <th>finished date</th>
             </thead>
@@ -77,7 +82,7 @@ const Table_tr = ({ item, index }) => {
               : "bg-slate-100 text-slate-500"
           }`}
         >
-          {item.tagTitle ? item?.tagTitle : "enter tag"}
+          {item?.tagTitle ? item?.tagTitle : "enter tag"}
         </div>
       </td>
       <td className='bg-zinc-950 text-zinc-300 w-72'>
@@ -97,8 +102,12 @@ const Table_tr = ({ item, index }) => {
           </span>
         </span>
       </td>
-      <td className='text-zinc-600'>{item?.assiendDate}</td>
-      <td>{item?.dateOfCompilation}</td>
+      <td>{item?.status}</td>
+      <td className='text-zinc-500'>{item?.assiendDate}</td>
+      <td className='flex flex-col text-sm'>
+        <span>{useFormatDate(item?.dateOfCompilation)} </span>
+        <span>{useFormatTime(item?.dateOfCompilation)}</span>
+      </td>
     </>
   );
 };

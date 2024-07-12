@@ -43,7 +43,7 @@ const Login = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${process.env.REACT_APP_API_URL}/login`,
+      url: `${process.env.REACT_APP_API_URL}/user/login`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -57,11 +57,9 @@ const Login = () => {
         if (response.data.success === true) {
           //   toast.success("Login Successfull");
           setLoader(false);
-          dispatch(setUserData(response.data.findUser));
-          navigate("/");
-          setTimeout(() => {
-            window.location.reload();
-          }, 700);
+          // dispatch(setUserData(response.data.findUser));
+          localStorage.setItem("user", JSON.stringify(response.data.findUser));
+          window.location.reload();
           setFormData({
             email: "",
             password: "",
@@ -86,7 +84,7 @@ const Login = () => {
                 Email
               </label>
               <input
-                type="email"
+                type='email'
                 id='email'
                 name='email'
                 value={formData.email}

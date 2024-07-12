@@ -10,7 +10,7 @@ import { newAssignedTask } from "../redux/slice";
 import { Loader } from "rsuite";
 
 const payload = {
-  userId: "",
+  assinedBy: null,
   title: "",
   content: "",
   tagTitle: "",
@@ -20,9 +20,9 @@ const payload = {
   status: "New Task",
   assinedTo: "",
   assiendName: "NA",
-  assiendDate: "",
+  assiendDate: null,
   assiendUserId: "NA",
-  dateOfCompilation: "",
+  dateOfCompilation: null,
 };
 
 const AssinedNewTask = () => {
@@ -39,12 +39,12 @@ const AssinedNewTask = () => {
       console.log("user", selector?.user);
       setData({
         ...data,
-        userId: selector?.user._id,
+        assinedBy: selector?.user._id,
         assiendDate: currentDate,
         dateOfCompilation: currentDate,
       });
     }
-  }, [selector?.user, data.userId]);
+  }, [selector?.user, data.assinedBy]);
 
   const [NewDate, setNewDate] = useState(null);
 
@@ -58,7 +58,7 @@ const AssinedNewTask = () => {
 
   console.log(data);
   const submitHandler = (e) => {
-    if (data.userId) {
+    if (data.assinedBy) {
       e.preventDefault();
       dispatch(newAssignedTask(data));
       setData(payload);
@@ -93,12 +93,12 @@ const AssinedNewTask = () => {
               <div className='flex flex-col gap-2 items-start'>
                 <div
                   className={`px-6 py-0.5 rounded-full text-sm ${
-                    data.tagBg
-                      ? `${data.tagBg} ${data.tagtext}`
+                    data?.tagBg
+                      ? `${data?.tagBg} ${data?.tagtext}`
                       : "bg-slate-100 text-slate-500"
                   }`}
                 >
-                  {data.tagTitle ? data.tagTitle : "enter tag"}
+                  {data?.tagTitle ? data?.tagTitle : "enter tag"}
                 </div>
 
                 <Input
@@ -106,7 +106,7 @@ const AssinedNewTask = () => {
                   placeholder='Tag title'
                   name='tagTitle'
                   onChange={inputHandler}
-                  value={data.tagTitle}
+                  value={data?.tagTitle}
                 />
               </div>
             </div>
@@ -139,7 +139,7 @@ const AssinedNewTask = () => {
               <Input
                 placeholder='email'
                 name='assinedTo'
-                value={data.assinedTo}
+                value={data?.assinedTo}
                 onChange={inputHandler}
                 className='bg-zinc-950'
               />

@@ -23,6 +23,10 @@ import {
 import AddTask from "../components/addTask";
 import axios from "axios";
 
+
+
+
+
 function Home() {
   // const [cards, setCards] = useState(tasks);
   const dispatch = useDispatch();
@@ -54,12 +58,14 @@ function Home() {
 
   useEffect(() => {
     if (data) {
-      dispatch(showTasks(data.user));
-      dispatch(fetchAssignedTasks(data.user?._id));
+      console.log(data?.user._id);
+      dispatch(showTasks(data?.user._id));
+      // dispatch(fetchAssignedTasks(data.user?._id));
     } else {
       alert("error in sending data");
     }
   }, []);
+
   // useEffect(() => {
   //   let config = {
   //     method: "get",

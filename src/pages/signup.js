@@ -34,7 +34,7 @@ const Signup = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${process.env.REACT_APP_API_URL}/signup`,
+      url: `${process.env.REACT_APP_API_URL}/user/signup`,
 
       headers: {
         "Content-Type": "application/json",

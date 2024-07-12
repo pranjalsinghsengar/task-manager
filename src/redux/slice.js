@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
@@ -12,19 +12,21 @@ const initialState = {
 };
 
 export const createTask = createAsyncThunk(
-  "tasks/createTask",
+  "tasks/create",
   async (data, { rejectWithValue }) => {
     console.log("data from slice", data);
     try {
       const response = await axios.post(
         // "https://666d790f7a3738f7cacc75fc.mockapi.io/new",
-        `${process.env.REACT_APP_API_URL}/create`,
+        `${process.env.REACT_APP_API_URL}/tasks/create`,
         JSON.stringify(data),
-        {
-          headers: {
-            "Content-Type": "application/json",
+        [
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        }
+        ]
       );
       // console.warn(response.data);
       return response.data; // Return the data from the response
@@ -37,14 +39,11 @@ export const createTask = createAsyncThunk(
 export const showTasks = createAsyncThunk(
   "showTasks",
   async (userId, { rejectWithValue }) => {
-    const data = {
-      userId: userId._id,
-    };
     // console.log("userId", data);
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}`,
-        JSON.stringify(data),
+        `${process.env.REACT_APP_API_URL}/tasks/read/${userId}`,
+
         {
           headers: {
             "Content-Type": "application/json",
@@ -63,7 +62,7 @@ export const updateTask = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/update`,
+        `${process.env.REACT_APP_API_URL}/tasks/update`,
         JSON.stringify(data),
         {
           headers: {
@@ -77,16 +76,14 @@ export const updateTask = createAsyncThunk(
     }
   }
 );
+
 export const deleteTask = createAsyncThunk(
   "delete",
   async (data, { rejectWithValue }) => {
-    const payload = {
-      _id: data,
-    };
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/delete`,
-        JSON.stringify(payload),
+        `${process.env.REACT_APP_API_URL}/tasks/delete/${data}`,
+
         {
           headers: {
             "Content-Type": "application/json",
@@ -122,12 +119,9 @@ export const getAssignedTask = createAsyncThunk(
   "getAssignedTask",
   async (data, { rejectWithValue }) => {
     try {
-      const payload = {
-        userId: data,
-      };
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/assinedtask/get`,
-        JSON.stringify(payload),
+        `${process.env.REACT_APP_API_URL}/assinedtask/get/${data}`,
+
         {
           headers: {
             "Content-Type": "application/json",
@@ -137,32 +131,6 @@ export const getAssignedTask = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
-    }
-  }
-);
-export const fetchAssignedTasks = createAsyncThunk(
-  "tasks/fetchAssignedTasks",
-  async (assignedUserId, { rejectWithValue }) => {
-    try {
-      const payload = {
-        assignedUserId: assignedUserId,
-      };
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/fetchAssignedTasks`,
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("fetchAssignedTasks", response.data);
-      return response.data; // Return the data retrieved from the API
-    } catch (error) {
-      console.error("Error fetching assigned tasks:", error);
-      return rejectWithValue(error.message); // Return with rejectWithValue for error handling
     }
   }
 );
@@ -191,10 +159,12 @@ export const taskSlice = createSlice({
       })
       .addCase(showTasks.fulfilled, (state, action) => {
         state.loading = false;
+        console.warn("action.payload", action.payload);
         if (action.payload.success === true) {
           if (!action.payload.tasks) {
             state.tasks = [];
           }
+          localStorage.setItem("tasks", action.payload.tasks);
           state.tasks = action.payload.tasks;
           console.log("action.payload", action.payload);
         } // Assuming payload structure has a 'tasks' property
@@ -212,6 +182,7 @@ export const taskSlice = createSlice({
       })
       .addCase(updateTask.fulfilled, (state, action) => {
         const updatedTask = action.payload.updatedTask;
+        console.log("action.payload", action.payload);
         if (updatedTask) {
           state.tasks = state.tasks.map((item) =>
             item._id === updatedTask._id
@@ -252,11 +223,11 @@ export const taskSlice = createSlice({
       .addCase(getAssignedTask.fulfilled, (state, action) => {
         state.assignTasks = action.payload.tasks;
         console.warn("getAssignedTask", action.payload);
-      })
-      .addCase(fetchAssignedTasks.fulfilled, (state, action) => {
-        // state.assignTasks = action.payload.tasks;
-        console.warn("fatchAssignedTask", action.payload);
       });
+    // .addCase(fetchAssignedTasks.fulfilled, (state, action) => {
+    //   // state.assignTasks = action.payload.tasks;
+    //   console.warn("fatchAssignedTask", action.payload);
+    // });
   },
   reducers: {
     setUserData: (state, action) => {
@@ -268,6 +239,7 @@ export const taskSlice = createSlice({
     getUserData: (state) => {
       const storedUser = localStorage.getItem("user");
       state.user = storedUser ? JSON.parse(storedUser) : null;
+      console.log("user", state.user);
     },
     settingHandler: (state) => {
       state.isSetting = state.isSetting === true ? false : true;

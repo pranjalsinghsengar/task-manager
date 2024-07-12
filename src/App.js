@@ -16,6 +16,15 @@ import axios from "axios";
 import TaskRouters from "./routes";
 
 function App() {
+  useEffect(() => {
+    const handleContextmenu = (e) => {
+      e.preventDefault();
+    };
+    document.addEventListener("contextmenu", handleContextmenu);
+    return function cleanup() {
+      document.removeEventListener("contextmenu", handleContextmenu);
+    };
+  }, []);
   return <TaskRouters />;
 }
 
