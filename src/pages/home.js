@@ -23,10 +23,6 @@ import {
 import AddTask from "../components/addTask";
 import axios from "axios";
 
-
-
-
-
 function Home() {
   // const [cards, setCards] = useState(tasks);
   const dispatch = useDispatch();
@@ -102,6 +98,7 @@ function Home() {
         {/* <button className='bg-white ' onClick={() => setValue("mahi")}>
           button
         </button> */}
+
         <div
           className='flex justify-evenly h-full gap-5 w-full px-16 pr-10'
           ref={motionRef}
@@ -136,9 +133,13 @@ function Home() {
             motionRef={motionRef}
           />
         </div>
-
         <SideBar />
       </div>
+      {allTasks.length === 0 && (
+        <p className='text-center text-white/20 absolute top-1/2 font-bold text-5xl left-1/2  translate-x-[-50%]'>
+          Create New Task Here
+        </p>
+      )}
     </Layout>
   );
 }

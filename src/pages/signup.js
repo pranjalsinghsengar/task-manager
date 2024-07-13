@@ -2,12 +2,13 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/layout";
+import Loader from "../components/loader";
 // import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
 const Signup = () => {
   const navigate = useNavigate();
-
+  const [loading, setloading] = useState(false);
   const payload = {
     firstName: "",
     lastName: "",
@@ -28,7 +29,7 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setloading(true);
     let data = JSON.stringify(formData);
 
     let config = {
@@ -49,12 +50,15 @@ const Signup = () => {
         if (response.data.success === true) {
           //   toast.success("User Created Successfully");
           setFormData(payload);
+          setloading(false);
           setTimeout(() => {
             navigate("/");
           }, 1000);
         }
       })
       .catch((error) => {
+        setloading(false);
+
         console.log(error);
         // toast.error(error.response.data.message);
       });
@@ -118,12 +122,16 @@ const Signup = () => {
                 required
               />
             </div>
-            <button
-              type='submit'
-              className='w-full px-3 py-2 text-white bg-slate-900 rounded  outline-none'
-            >
-              Sign Up
-            </button>
+            {loading ? (
+              <Loader />
+            ) : (
+              <button
+                type='submit'
+                className='w-full px-3 py-2 text-white bg-slate-900 rounded  outline-none'
+              >
+                Sign Up
+              </button>
+            )}
           </form>
           <button onClick={() => navigate("/")} className='text-violet-500  '>
             have you an account ?

@@ -27,11 +27,24 @@ const AddTask = ({ add, setAdd }) => {
   // console.log(data);
   const FormHandler = (e) => {
     e.preventDefault();
-    // setCards((prev) => [...prev, data]);
-    // dispatch(addTask(data));
-    if (data.userId) {
-      dispatch(createTask(data));
+    if (
+      !data.title ||
+      !data.content ||
+      !data.tagTitle ||
+      !data.tagBg ||
+      !data.tagtext ||
+      !data.taghero ||
+      !data.status ||
+      !data.dateOfCompilation ||
+      !data.userId
+    ) {
+      return alert("fill the details correctly");
+    }
+    else  {
+      // setCards((prev) => [...prev, data]);
+      // dispatch(addTask(data));
       console.log("data", data);
+      dispatch(createTask(data));
       setData(intialize);
     }
   };
@@ -41,7 +54,7 @@ const AddTask = ({ add, setAdd }) => {
       {add ? (
         <div className='shadow-xl  border-stone-500 bg-zinc-800 border px-3 py-2 rounded-lg z-10 '>
           <div className='flex items-center justify-between'>
-            <h1 className='text-lg font-bold  '>Add Task </h1>
+            <h1 className='text-lg font-bold'>Add Task </h1>
             {setAdd && (
               <button onClick={() => setAdd(false)}>
                 <IoCloseOutline />

@@ -11,30 +11,31 @@ const initialState = {
   isSetting: false,
 };
 
+
+
 export const createTask = createAsyncThunk(
   "tasks/create",
   async (data, { rejectWithValue }) => {
     console.log("data from slice", data);
     try {
       const response = await axios.post(
-        // "https://666d790f7a3738f7cacc75fc.mockapi.io/new",
         `${process.env.REACT_APP_API_URL}/tasks/create`,
-        JSON.stringify(data),
-        [
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
+        data,  // Directly pass the data object here
+        {
+          headers: {
+            "Content-Type": "application/json",
           },
-        ]
+        }
       );
-      // console.warn(response.data);
-      return response.data; // Return the data from the response
+
+      console.log(response.data);  // Assuming you want to log the response data
+      return response.data;  // Return the response data
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 export const showTasks = createAsyncThunk(
   "showTasks",
@@ -141,24 +142,25 @@ export const taskSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createTask.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         state.error = null;
       })
       .addCase(createTask.fulfilled, (state, action) => {
-        state.loading = false;
+        // state.loading = false;
         state.tasks.push(action.payload.tasks);
-        // console.log(action.payload);
+        console.log(action.payload);
       })
       .addCase(createTask.rejected, (state, action) => {
-        state.loading = false;
+        // state.loading = false;
         state.error = action.payload;
+        console.error(action.payload);
       })
       .addCase(showTasks.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         state.error = null;
       })
       .addCase(showTasks.fulfilled, (state, action) => {
-        state.loading = false;
+        // state.loading = false;
         console.warn("action.payload", action.payload);
         if (action.payload.success === true) {
           if (!action.payload.tasks) {
@@ -173,11 +175,11 @@ export const taskSlice = createSlice({
         }
       })
       .addCase(showTasks.rejected, (state, action) => {
-        state.loading = false;
+        // state.loading = false;
         state.error = action.payload;
       })
       .addCase(updateTask.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         state.error = null;
       })
       .addCase(updateTask.fulfilled, (state, action) => {

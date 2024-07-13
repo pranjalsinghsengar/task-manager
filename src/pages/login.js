@@ -12,6 +12,8 @@ import Loader from "../components/loader";
 const Login = () => {
   const navigate = useNavigate();
   //   const { currentUser } = useContext(AppContext);
+  // const [loading, setloading] = useState(false);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
