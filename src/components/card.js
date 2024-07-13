@@ -27,7 +27,7 @@ const Card = ({
   content,
   status,
   dateOfCompilation,
-  assiendName,
+  assinedByName,
   HandleDragStart,
   motionRef,
 }) => {
@@ -60,9 +60,9 @@ const Card = ({
           >
             {tagTitle}
           </div>
-          {assiendName && (
+          {assinedByName && (
             <i className=' text-zinc-400 lg:text-sm text-sm'>
-              <span className='font-bold'>by :</span> {assiendName}
+              <span className='font-bold'>by :</span> {assinedByName}
             </i>
           )}
         </div>
