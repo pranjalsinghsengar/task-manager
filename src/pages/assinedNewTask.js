@@ -146,16 +146,16 @@ const AssinedNewTask = () => {
             </div>
           </div>
           <div className='flex justify-center text-lg'>
-            {selector.loading ? (
+            {/* {selector.loading ? (
               <Loader />
-            ) : (
-              <button
-                type='submit'
-                className='border border-sky-300 px-10 py-2 rounded-md bg-gradient-to-r from-white to-sky-400 text-transparent bg-clip-text '
-              >
-                send
-              </button>
-            )}
+            ) : ( */}
+            <button
+              type='submit'
+              className='border border-sky-300 px-10 py-2 rounded-md bg-gradient-to-r from-white to-sky-400 text-transparent bg-clip-text '
+            >
+              send
+            </button>
+            {/* )} */}
           </div>
         </form>
 
